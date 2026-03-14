@@ -21,9 +21,9 @@ program
 
 program
   .command("init")
-  .option("--scan", "Scan workspace for git repos")
-  .action((options) => init(options));
-
+  .option("--scan", "Scan repositories")
+  .action(init);
+  
 program
   .command("add <path>")
   .description("Add repository to fleet")

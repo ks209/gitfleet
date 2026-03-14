@@ -3,7 +3,7 @@ const path = require("path");
 
 const scan = require("./scan");
 
-function init(args = []) {
+function init(options) {
 
   const dir = path.join(process.cwd(), ".gitfleet");
 
@@ -22,7 +22,7 @@ function init(args = []) {
 
   console.log("✔ GitFleet workspace initialized");
 
-  if (args.includes("--scan")) {
+  if (options.scan) {
     console.log("\n🔎 Scanning for git repositories...\n");
     scan(process.cwd());
   }

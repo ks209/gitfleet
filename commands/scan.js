@@ -12,14 +12,16 @@ function findRepos(dir, repos = []) {
     const fullPath = path.join(dir, item.name);
 
     if (item.name === ".git") {
-    repos.push(dir);
-    return repos;
+      repos.push(dir);
+      continue;
     }
 
-    if (item.isDirectory() && item.name !== "node_modules") {
+    if (
+      item.isDirectory() &&
+      !["node_modules", ".git", ".gitfleet"].includes(item.name)
+    ) {
       findRepos(fullPath, repos);
     }
-
   }
 
   return repos;

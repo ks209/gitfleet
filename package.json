@@ -1,0 +1,23 @@
+{
+  "name": "gitfleet",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["git",
+    "cli",
+    "developer-tools",
+    "git-manager"],
+  "description": "",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "ora": "^9.3.0"
+  },
+  "bin": {
+  "gitfleet": "./bin/gitfleet.js"
+  },
+"author": "Kartik Singla",
+  "license": "MIT"
+}

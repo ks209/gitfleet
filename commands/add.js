@@ -5,28 +5,29 @@ const { loadConfig, saveConfig } = require("../core/config");
 
 module.exports = function (repoPath) {
 
-  const gitDir = path.join(repoPath, ".git");
+  const absolutePath = path.resolve(repoPath);
+  const gitDir = path.join(absolutePath, ".git");
 
-  if (!fs.existsSync(repoPath)) {
-    console.log("Path does not exist:", repoPath);
+  if (!fs.existsSync(absolutePath)) {
+    console.log("❌ Path does not exist:", absolutePath);
     return;
   }
 
   if (!fs.existsSync(gitDir)) {
-    console.log("Not a git repository:", repoPath);
+    console.log("❌ Not a git repository:", absolutePath);
     return;
   }
 
   const config = loadConfig();
 
-  if (config.repos.includes(repoPath)) {
-    console.log("⚠ Repo already added:", repoPath);
+  if (config.repos.includes(absolutePath)) {
+    console.log("⚠ Repo already added:", absolutePath);
     return;
   }
 
-  config.repos.push(repoPath);
+  config.repos.push(absolutePath);
 
   saveConfig(config);
 
-  console.log("✅ Added repo:", repoPath);
+  console.log("✅ Added repo:", absolutePath);
 };

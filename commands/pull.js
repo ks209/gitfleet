@@ -1,29 +1,26 @@
-const { loadConfig } = require("../core/config");
-const { execSync } = require("child_process");
+const { runWorkerPool } = require("../core/workerPool");
+const { exec } = require("child_process");
 
-function isRepoDirty(repo) {
+function runGit(repo, command) {
+  return new Promise((resolve, reject) => {
+    exec(`git -C "${repo}" ${command}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(`❌ ${repo}`);
+        return reject(err);
+      }
 
-  const status = execSync("git status --porcelain", { cwd: repo })
-    .toString()
-    .trim();
-
-  return status.length > 0;
-
+      console.log(`✔ ${repo}`);
+      resolve(stdout);
+    });
+  });
 }
 
-module.exports = function () {
-  const config = loadConfig();
-  for (const repo of config.repos) {
-    try {
-      if (isRepoDirty(repo)) {
-        console.log(`⚠ Skipping ${repo} (local changes)`);
-        continue;
-      }
-      console.log(`⬇ Pulling ${repo}`);
-      execSync("git pull", { cwd: repo, stdio: "inherit" });
-    } catch (err) {
-      console.log(`Failed for ${repo}`);
-    }
-  }
+async function pullRepos(repos) {
+  await runWorkerPool(
+    repos,
+    (repo) => runGit(repo, "pull"),
+    4
+  );
+}
 
-};
+module.exports = pullRepos;

@@ -11,10 +11,9 @@ function findRepos(dir, repos = []) {
 
     const fullPath = path.join(dir, item.name);
 
-    // if .git folder found
     if (item.name === ".git") {
-      repos.push(dir);
-      continue;
+    repos.push(dir);
+    return repos;
     }
 
     if (item.isDirectory() && item.name !== "node_modules") {

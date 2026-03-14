@@ -1,28 +1,45 @@
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
+const os = require("os");
 
-const configDir = path.join(os.homedir(), ".gitfleet");
-const configFile = path.join(configDir, "config.json");
+function findWorkspaceConfig(start = process.cwd()) {
+  let dir = start;
 
-function loadConfig() {
-  if (!fs.existsSync(configFile)) {
-    return { repos: [] };
+  while (dir !== path.dirname(dir)) {
+    const configDir = path.join(dir, ".gitfleet");
+
+    if (fs.existsSync(configDir)) {
+      return path.join(configDir, "config.json");
+    }
+
+    dir = path.dirname(dir);
   }
 
-  return JSON.parse(fs.readFileSync(configFile));
+  return null;
 }
 
-function saveConfig(config) {
-  if (!fs.existsSync(configDir)) {
-    fs.mkdirSync(configDir);
+function globalConfigPath() {
+  return path.join(os.homedir(), ".gitfleet", "config.json");
+}
+
+function loadConfig() {
+  const workspace = findWorkspaceConfig();
+
+  if (workspace && fs.existsSync(workspace)) {
+    return JSON.parse(fs.readFileSync(workspace));
   }
 
-  fs.writeFileSync(configFile, JSON.stringify(config, null, 2));
+  const global = globalConfigPath();
+
+  if (fs.existsSync(global)) {
+    return JSON.parse(fs.readFileSync(global));
+  }
+
+  return { repos: [] };
 }
 
 module.exports = {
   loadConfig,
-  saveConfig,
-  configFile,
+  findWorkspaceConfig,
+  globalConfigPath
 };
